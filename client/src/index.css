@@ -3,6 +3,12 @@
     border:0;
     padding:0;
 }
+:root {
+    --primary-color: #147174;
+    --secondary-color: #041a1b;
+    --background-color:#DEF7F8;
+    /* Add more color variables as needed */
+  }
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
