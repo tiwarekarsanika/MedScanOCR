@@ -1,13 +1,17 @@
 import { useState } from 'react'
 import ChatApp from './Pages/chatApp'
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProfileCreate from './Pages/ProfileCreate';
 
-function App() {
- 
-
+const App = () => {
   return (
-    <div>
-      <ChatApp/>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<ChatApp />} />
+        <Route path="/profile" element={<ProfileCreate />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
