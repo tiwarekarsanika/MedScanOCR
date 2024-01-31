@@ -138,7 +138,7 @@ const ChatApp = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("data received is", data);z
+        console.log("data received is", data);
         setUsers(data);
       })
       .catch((error) => console.error(error));
