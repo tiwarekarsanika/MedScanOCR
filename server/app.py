@@ -5,9 +5,12 @@ import sys
 from bson import ObjectId
 from gridfs import GridFS
 import hashlib
+from flask_cors import CORS
 
 app = Flask(__name__)
 fs = GridFS(dbConfig.db)
+
+CORS(app, origins="http://localhost:5173")
 
 def calculate_hash(content):
     md5 = hashlib.md5()
@@ -32,8 +35,7 @@ def profile():
     age = input['age']
     gender = input['gender']
     phone = input['phone']
-    password = input['password']
-    result = dbConfig.db.collection.insert_one({"name": name, "email": email, "age": age, "gender": gender, "phone": phone, "password": password})
+    result = dbConfig.db.collection.insert_one({"name": name, "email": email, "age": age, "gender": gender, "phone": phone})
     inserted_id = str(result.inserted_id)
     response_data = {
         "_id": inserted_id,
@@ -41,8 +43,7 @@ def profile():
         "email": email,
         "age": age,
         "gender": gender,
-        "phone": phone,
-        "password": password
+        "phone": phone
     }
     print(response_data, file=sys.stderr)
     return jsonify(response_data) 
