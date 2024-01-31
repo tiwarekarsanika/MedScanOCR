@@ -138,12 +138,12 @@ const ChatApp = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("data received is", data);
+        console.log("data received is", data);z
         setUsers(data);
       })
       .catch((error) => console.error(error));
   }, []);
-  
+
   const [query, setQuery] = useState('')
   const [message, setMessage] = useState([
     { message: 'Please select a patient', role: 'bot' }
