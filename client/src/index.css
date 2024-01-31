@@ -4,6 +4,12 @@
     padding:0;
     font-family: 'Poppins';
 }
+:root {
+    --primary-color: #147174;
+    --secondary-color: #041a1b;
+    --background-color:#DEF7F8;
+    /* Add more color variables as needed */
+  }
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

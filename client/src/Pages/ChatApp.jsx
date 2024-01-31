@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import SendIcon from '@mui/icons-material/Send';
+import PatientCard from '../components/PatientCard';
 
 const Wrapper = styled.div`
 width:100%;
@@ -22,6 +24,9 @@ display:flex;
     flex:1;
     display:flex;
     align-items:center;
+    font-weight:700;
+    font-size:2rem;
+    margin-left:10%;
 
 }
 `
@@ -31,16 +36,9 @@ flex:7;
 display:flex;
 flex-direction:column;
 align-items:center;
-overflow-y:auto;
+overflow:auto;
 max-height:90%;
 
-
-`
-const Patient = styled.div`
-width:90%;
-font-size:1rem;
-margin:2%;
-height: 50px;
 `
 
 const ChatWrapper= styled.div`
@@ -48,30 +46,44 @@ height:100;
 flex:10;
 display:flex;
 flex-direction:column;
+background-color:var(--background-color);
 `
-const ChatContent= styled.div`
-height:85%;
-display:flex;
-flex-direction:column;
-align-items:center;
-padding:4%;
+const ChatContent = styled.div`
+  height: 85%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4%;
+  overflow: auto;
+
+    &::-webkit-scrollbar{
+        display:none;
+    }
 `
+
 const ChatInput= styled.div`
 height:15%;
-
+margin-top:2%;
 display:flex;
 justify-content:center;
+
 input{
     width:70%;
     height:50%;
     border-radius:10px;
+    border:1px solid var(--primary-color);
+    padding-left:10px;
+    outline:none; 
 }
 button{
     width:5%;
     height:50%;
-    background-color:white;
+    background-color:var(--primary-color);
     margin-left:3%;
     border-radius:20%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
 `
@@ -79,7 +91,9 @@ const MessageBot = styled.div`
 width:90%;
 height:auto;
 padding:20px;
-background-color:red;
+background-color:white;
+border:2px solid var(--primary-color);
+border-radius:10px;
 `
 const MessageInput = styled.div`
 width:90%;
@@ -112,7 +126,7 @@ const PatientArr = [{
 
 
 const ChatApp = () => {
-    const [query , setQuery]=useState({message:'',role:'human'})
+    const [query , setQuery]=useState('')
     const[message , setMessage]=useState([{message:'how may i help',role:'bot'}])
 
     const handleChange = (e) => {
@@ -121,20 +135,18 @@ const ChatApp = () => {
     const handleSend = () => {
         if(query.trim() !== ''){
             setMessage([...message,{message:query.trim() , role:'human'}])
-            setQuery('')
+            setQuery({message:'',role:'human'})
         }
     }
 
     return (
     <Wrapper>
         <Patients>
-            <div className='title'>Patients</div>
+        <div className='title' style={{ color: 'var(--secondary-color)' }}>Patients</div>
             <PatientListwrapper>
                 {
                     PatientArr.map((p)=>(
-                        <Patient>
-                            {p.name}
-                        </Patient>
+                        <PatientCard name={p.name}></PatientCard>
                     ))
                 }
             </PatientListwrapper>
@@ -145,15 +157,21 @@ const ChatApp = () => {
         <ChatContent>
             {
                 message.map((ans)=>(
-                    ans.role === 'bot'?(<MessageBot>{ans.message}</MessageBot>):(<MessageInput>{ans.message}</MessageInput>)
-                ))
+                    ans.role === 'bot'?
+                    (<MessageBot>
+                    {ans.message}
+                    </MessageBot>):
 
+                    (<MessageInput>
+                    {ans.message}
+                    </MessageInput>)
+                ))
             }
         </ChatContent>
 
         <ChatInput>
-        <input value={query} onChange={handleChange}></input>
-        <button onClick={handleSend}>click</button>
+        <input value={query.message} onChange={handleChange} placeholder='Enter your query'></input>
+        <button onClick={handleSend}><SendIcon style={{ color: 'white' }}/></button>
         </ChatInput>
             
         </ChatWrapper>
