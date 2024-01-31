@@ -5,9 +5,9 @@
     font-family: 'Poppins';
 }
 :root {
-    --primary-color: #147174;
-    --secondary-color: #041a1b;
-    --background-color:#DEF7F8;
+    --primary-color: #0D265C;
+    --secondary-color: #0B98DA;
+    --background-color:#f6f8fa;
     /* Add more color variables as needed */
   }
 @tailwind base;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import SendIcon from '@mui/icons-material/Send';
 import PatientCard from '../components/PatientCard';
@@ -12,7 +12,6 @@ display:flex;
 const Patients = styled.div`
 height:100;
 flex:3;
-border-right:4px solid #0d265c;
 background-color:white;
 display:flex; 
  flex-direction:column;
@@ -27,6 +26,7 @@ display:flex;
     font-weight:700;
     font-size:2rem;
     margin-left:10%;
+    color:var(--primary-color)
 
 }
 `
@@ -38,7 +38,6 @@ flex-direction:column;
 align-items:center;
 overflow:auto;
 max-height:90%;
-
 `
 
 const ChatWrapper= styled.div`
@@ -55,6 +54,13 @@ const ChatContent = styled.div`
   align-items: center;
   padding: 4%;
   overflow: auto;
+
+  .patientName{
+    font-weight:700;
+    font-size:2.3rem;
+    width:85%;
+    margin-bottom:0.5%;
+  }
 
     &::-webkit-scrollbar{
         display:none;
@@ -78,7 +84,7 @@ input{
 button{
     width:5%;
     height:50%;
-    background-color:var(--primary-color);
+    background-color:var(--secondary-color);
     margin-left:3%;
     border-radius:20%;
     display:flex;
@@ -88,7 +94,7 @@ button{
 
 `
 const MessageBot = styled.div`
-width:90%;
+width:85%;
 height:auto;
 padding:20px;
 background-color:white;
@@ -128,6 +134,7 @@ const PatientArr = [{
 const ChatApp = () => {
     const [query , setQuery]=useState('')
     const[message , setMessage]=useState([{message:'how may i help',role:'bot'}])
+    const[patient , setPatient]=useState('Please Select Patient')
 
     const handleChange = (e) => {
         setQuery(e.target.value)
@@ -138,15 +145,19 @@ const ChatApp = () => {
             setQuery({message:'',role:'human'})
         }
     }
+   
 
     return (
     <Wrapper>
         <Patients>
-        <div className='title' style={{ color: 'var(--secondary-color)' }}>Patients</div>
+        <div className='title'>Patients</div>
             <PatientListwrapper>
                 {
                     PatientArr.map((p)=>(
-                        <PatientCard name={p.name}></PatientCard>
+                        
+                        <PatientCard name={p.name} onClick={() => setPatient(p.name)}></PatientCard>
+                        
+                       
                     ))
                 }
             </PatientListwrapper>
@@ -155,6 +166,7 @@ const ChatApp = () => {
 
         <ChatWrapper>
         <ChatContent>
+        <div className='patientName'>{patient}</div>
             {
                 message.map((ans)=>(
                     ans.role === 'bot'?
