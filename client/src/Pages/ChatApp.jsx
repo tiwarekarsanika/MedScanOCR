@@ -31,7 +31,7 @@ flex:7;
 display:flex;
 flex-direction:column;
 align-items:center;
-overflow-y:auto;
+overflow:auto;
 max-height:90%;
 
 
@@ -49,22 +49,31 @@ flex:10;
 display:flex;
 flex-direction:column;
 `
-const ChatContent= styled.div`
-height:85%;
-display:flex;
-flex-direction:column;
-align-items:center;
-padding:4%;
+const ChatContent = styled.div`
+  height: 85%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4%;
+  overflow: auto;
+
+    &::-webkit-scrollbar{
+        display:none;
+    }
 `
+
 const ChatInput= styled.div`
 height:15%;
-
+margin-top:2%;
 display:flex;
 justify-content:center;
+
 input{
     width:70%;
     height:50%;
     border-radius:10px;
+    padding-left:10px;
+    outline:none; 
 }
 button{
     width:5%;
@@ -112,7 +121,7 @@ const PatientArr = [{
 
 
 const ChatApp = () => {
-    const [query , setQuery]=useState({message:'',role:'human'})
+    const [query , setQuery]=useState('')
     const[message , setMessage]=useState([{message:'how may i help',role:'bot'}])
 
     const handleChange = (e) => {
@@ -121,7 +130,7 @@ const ChatApp = () => {
     const handleSend = () => {
         if(query.trim() !== ''){
             setMessage([...message,{message:query.trim() , role:'human'}])
-            setQuery('')
+            setQuery({message:'',role:'human'})
         }
     }
 
@@ -147,12 +156,11 @@ const ChatApp = () => {
                 message.map((ans)=>(
                     ans.role === 'bot'?(<MessageBot>{ans.message}</MessageBot>):(<MessageInput>{ans.message}</MessageInput>)
                 ))
-
             }
         </ChatContent>
 
         <ChatInput>
-        <input value={query} onChange={handleChange}></input>
+        <input value={query.message} onChange={handleChange} placeholder='Enter your query'></input>
         <button onClick={handleSend}>click</button>
         </ChatInput>
             
