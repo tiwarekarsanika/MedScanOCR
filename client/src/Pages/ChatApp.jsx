@@ -75,11 +75,17 @@ button{
 }
 
 `
-const Message = styled.div`
+const MessageBot = styled.div`
 width:90%;
 height:auto;
 padding:20px;
 background-color:red;
+`
+const MessageInput = styled.div`
+width:90%;
+height:auto;
+padding:20px;
+background-color:yellow;
 `
 const PatientArr = [{
     name:'arshad'
@@ -106,14 +112,17 @@ const PatientArr = [{
 
 
 const ChatApp = () => {
-    const [query , setQuery]=useState('')
-    const[message , setMessage]=useState(['how may i help you today'])
+    const [query , setQuery]=useState({message:'',role:'human'})
+    const[message , setMessage]=useState([{message:'how may i help',role:'bot'}])
 
     const handleChange = (e) => {
         setQuery(e.target.value)
     }
     const handleSend = () => {
-        setMessage(query)
+        if(query.trim() !== ''){
+            setMessage([...message,{message:query.trim() , role:'human'}])
+            setQuery('')
+        }
     }
 
     return (
@@ -135,18 +144,15 @@ const ChatApp = () => {
         <ChatWrapper>
         <ChatContent>
             {
-                message.map((chat)=>(
-                    
-                        <Message>
-                            {chat}
-                        </Message>
-                    
+                message.map((ans)=>(
+                    ans.role === 'bot'?(<MessageBot>{ans.message}</MessageBot>):(<MessageInput>{ans.message}</MessageInput>)
                 ))
+
             }
         </ChatContent>
 
         <ChatInput>
-        <input onChange={handleChange}></input>
+        <input value={query} onChange={handleChange}></input>
         <button onClick={handleSend}>click</button>
         </ChatInput>
             
