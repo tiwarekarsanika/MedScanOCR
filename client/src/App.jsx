@@ -1,6 +1,4 @@
-import { useState } from 'react'
 import ChatApp from './Pages/chatApp'
-import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProfileCreate from './Pages/ProfileCreate';
 
