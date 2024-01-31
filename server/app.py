@@ -6,6 +6,7 @@ from bson import ObjectId
 from gridfs import GridFS
 import hashlib
 from flask_cors import CORS
+import imghdr
 
 app = Flask(__name__)
 fs = GridFS(dbConfig.db)
@@ -46,7 +47,14 @@ def profile():
         "phone": phone
     }
     print(response_data, file=sys.stderr)
-    return jsonify(response_data) 
+    return jsonify(response_data)
+
+def detect_file_type(file_content):
+    image_type = imghdr.what(None, h=file_content)
+    if image_type:
+        return 0
+    else:
+        return 1
 
 @app.route('/upload/<user_id>', methods=['POST'])
 def pdfUpload(user_id):
@@ -68,19 +76,25 @@ def pdfUpload(user_id):
                 return jsonify({'message': f'Duplicate PDF file detected: {pdf_file.filename}'}), 409
             
             file_id = fs.put(pdf_content, filename=pdf_file.filename)
+            file_type = detect_file_type(pdf_content)
             
             metadata = {
                 'filename': pdf_file.filename,
                 'hash': pdf_hash,
                 'file_id': file_id,
+                'file_type': file_type
             }
             
             dbConfig.db.collection.update_one({'_id': user_id_obj}, {'$push': {'files': metadata}})
             
         print("hello", file=sys.stderr) 
-        return jsonify({'message': 'PDF file uploaded successfully'}), 201
+        if file_type == 0:
+            return jsonify({'flag': 0, "message": 'Image uploaded successfully.'}), 201
+        else:
+            return jsonify({'flag': 1, "message": 'PDF uploaded successfully.'}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
     
 @app.route('/download/<user_id>/<file_id>', methods=['GET'])
 def pdfDownload(user_id, file_id):
@@ -110,29 +124,37 @@ def pdfDownload(user_id, file_id):
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/user/<user_id>', methods=['GET'])
-def getUser(user_id):
+@app.route('/users', methods=['GET'])
+def getUsers():
     try:
-        user_id_obj = ObjectId(user_id)
-        user_document = dbConfig.db.collection.find_one({'_id': user_id_obj})
-        if not user_document:
-            return jsonify({'message': 'User not found'}), 404
-        
-        
-        response_data = {
-            "_id": user_document["_id"],
-            "name": user_document["name"],
-            "email": user_document["email"],
-            "age": user_document["age"],
-            "gender": user_document["gender"],
-            "phone": user_document["phone"]
-        }
-        response_data["_id"] = str(response_data["_id"])
-        
-        return jsonify(response_data), 201
+        users_cursor = dbConfig.db.collection.find()
+        users_data = []
+        for user_document in users_cursor:
+            user_data = {
+                "_id": str(user_document["_id"]),
+                "name": user_document.get("name", ""),
+                "email": user_document.get("email", ""),
+                "age": user_document.get("age", ""),
+                "gender": user_document.get("gender", ""),
+                "phone": user_document.get("phone", "")
+            }
+            users_data.append(user_data)
+
+        return jsonify(users_data), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
     
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
+    
+#     "dotenv": "^16.3.1",
+#     "ethers": "^5.7.1",
+#     "express": "^4.18.2",
+#     "ipfs-http-client": "^60.0.1",
+#     "moralis": "^2.23.1",
+#     "multer": "^1.4.5-lts.1",
+#     "nodemon": "^3.0.1",
+#     "solc": "^0.8.21",
+#     "undici": "^5.24.0"

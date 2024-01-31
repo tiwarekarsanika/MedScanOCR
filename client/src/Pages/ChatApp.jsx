@@ -4,8 +4,6 @@ import SendIcon from '@mui/icons-material/Send'
 import PatientCard from '../components/PatientCard'
 import logo from '../assets/logo2.png'
 
-import Alert from '@mui/material/Alert';
-
 const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
@@ -130,40 +128,22 @@ const MessageInput = styled.div`
   white-space: pre-wrap; 
   overflow-wrap: break-word;
 `
-const PatientArr = [
-  {
-    name: 'arshad',
-    age: '21',
-    gender: 'Male'
-  },
-  {
-    name: 'yash',
-    age: '21',
-    gender: 'Male'
-  },
-  {
-    name: 'yash',
-    age: '21',
-    gender: 'Male'
-  },
-  {
-    name: 'yash',
-    age: '21',
-    gender: 'Male'
-  },
-  {
-    name: 'yash',
-    age: '21',
-    gender: 'Male'
-  },
-  {
-    name: 'yash',
-    age: '21',
-    gender: 'Male'
-  }
-]
 
 const ChatApp = () => {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/users', {
+      method: 'GET'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("data received is", data);z
+        setUsers(data);
+      })
+      .catch((error) => console.error(error));
+  }, []);
+
   const [query, setQuery] = useState('')
   const [message, setMessage] = useState([
     { message: 'Please select a patient', role: 'bot' }
@@ -186,8 +166,8 @@ const ChatApp = () => {
   useEffect(() => {
     patient.name !== ''
       ? setMessage([
-          { message: `Ask me anything about ${patient.name}`, role: 'bot' }
-        ])
+        { message: `Ask me anything about ${patient.name}`, role: 'bot' }
+      ])
       : setMessage([{ message: `Please select a Patient`, role: 'bot' }])
   }, [patient.name])
 
@@ -204,7 +184,7 @@ const ChatApp = () => {
           Patients
         </div>
         <PatientListwrapper>
-          {PatientArr.map(p => (
+          {users.map(p => (
             <PatientCard
               name={p.name}
               age={p.age}
@@ -242,11 +222,11 @@ const ChatApp = () => {
         </ChatContent>
 
         <ChatInput>
-                {/* <TextareaAutosize value={query} minRows={3} maxRows={3} className='textarea' onChange={handleChange} /> */}
-            
-            <textarea onChange={handleChange} value={query}>
-                Enter your query
-            </textarea>
+          {/* <TextareaAutosize value={query} minRows={3} maxRows={3} className='textarea' onChange={handleChange} /> */}
+
+          <textarea onChange={handleChange} value={query}>
+            Enter your query
+          </textarea>
           <button onClick={handleSend}>
             <SendIcon style={{ color: 'white' }} />
           </button>
