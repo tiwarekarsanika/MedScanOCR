@@ -1,45 +1,70 @@
+// UploadFiles.js
+
 import React, { Component } from "react";
 import Dropzone from "react-dropzone";
-import styled from "styled-components";
+import axios from "axios";
 
-import UploadService from "../Pages/upload-files.services";
+const http = axios.create({
+  baseURL: "http://localhost:8000/upload/65ba595cc1eb24b3b0715082",
+  headers: {
+    "Content-type": "application/json",
+  },
+});
 
+class UploadFilesService {
+  upload(file, onUploadProgress) {
+    let formData = new FormData();
+    formData.append("file", file);
 
-export default class UploadFiles extends Component {
-  constructor(props) {
-    super(props);
-    this.upload = this.upload.bind(this);
-    this.uploadFiles = this.uploadFiles.bind(this);
-    this.onDrop = this.onDrop.bind(this);
-
-    this.state = {
-      selectedFiles: undefined,
-      progressInfos: [],
-      message: [],
-      fileInfos: [],
-    };
-  }
-
-  componentDidMount() {
-    UploadService.getFiles().then((response) => {
-      this.setState({
-        fileInfos: response.data,
-      });
+    return http.post("", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      onUploadProgress,
     });
   }
 
-  upload(idx, file) {
-    let _progressInfos = [...this.state.progressInfos];
+  getFiles() {
+    return http.get("/files");
+  }
+}
 
-    UploadService.upload(file, (event) => {
-      _progressInfos[idx].percentage = Math.round(
-        (100 * event.loaded) / event.total
-      );
-      this.setState({
-        _progressInfos,
-      });
-    })
+const uploadFilesService = new UploadFilesService();
+
+export default class UploadFiles extends Component {
+  state = {
+    selectedFiles: undefined,
+    progressInfos: [],
+    message: [],
+    fileInfos: [],
+  };
+
+  componentDidMount() {
+    this.loadFiles();
+  }
+
+  loadFiles = () => {
+    uploadFilesService.getFiles()
       .then((response) => {
+        this.setState({
+          fileInfos: response.data,
+        });
+      })
+      .catch((error) => console.error("Error loading files:", error));
+  };
+
+  upload = (idx, file) => {
+    // let _progressInfos = [...this.state.progressInfos];
+
+    uploadFilesService.upload(file, (event) => {
+    //   _progressInfos[idx].percentage = Math.round(
+    //     (100 * event.loaded) / event.total
+    //   );
+    //   this.setState({
+    //     _progressInfos,
+    //   });
+    })
+      .then(() => {
         this.setState((prev) => {
           let nextMessage = [
             ...prev.message,
@@ -50,15 +75,10 @@ export default class UploadFiles extends Component {
           };
         });
 
-        return UploadService.getFiles();
-      })
-      .then((files) => {
-        this.setState({
-          fileInfos: files.data,
-        });
+        return this.loadFiles();
       })
       .catch(() => {
-        _progressInfos[idx].percentage = 0;
+        // _progressInfos[idx].percentage = 0;
         this.setState((prev) => {
           let nextMessage = [
             ...prev.message,
@@ -70,9 +90,9 @@ export default class UploadFiles extends Component {
           };
         });
       });
-  }
+  };
 
-  uploadFiles() {
+  uploadFiles = () => {
     const selectedFiles = this.state.selectedFiles;
 
     let _progressInfos = [];
@@ -83,8 +103,8 @@ export default class UploadFiles extends Component {
 
     this.setState(
       {
-        progressInfos: _progressInfos,
-        message: [],
+        // progressInfos: _progressInfos,
+        // message: [],
       },
       () => {
         for (let i = 0; i < selectedFiles.length; i++) {
@@ -92,13 +112,13 @@ export default class UploadFiles extends Component {
         }
       }
     );
-  }
+  };
 
-  onDrop(files) {
+  onDrop = (files) => {
     if (files.length > 0) {
       this.setState({ selectedFiles: files });
     }
-  }
+  };
 
   render() {
     const { selectedFiles, progressInfos, message, fileInfos } = this.state;
@@ -124,8 +144,8 @@ export default class UploadFiles extends Component {
             </div>
           ))}
 
-            <div className="my-3">
-            <Dropzone onDrop={this.onDrop}>
+        <div className="my-3">
+          <Dropzone onDrop={this.onDrop}>
             {({ getRootProps, getInputProps }) => (
               <section>
                 <div {...getRootProps({ className: "dropzone" })}>
@@ -152,7 +172,6 @@ export default class UploadFiles extends Component {
                   </button>
                 </aside>
               </section>
-              
             )}
           </Dropzone>
         </div>
@@ -160,9 +179,9 @@ export default class UploadFiles extends Component {
         {message.length > 0 && (
           <div className="alert alert-secondary" role="alert">
             <ul>
-              {message.map((item, i) => {
-                return <li key={i}>{item}</li>;
-              })}
+              {message.map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
             </ul>
           </div>
         )}
@@ -171,12 +190,11 @@ export default class UploadFiles extends Component {
           <div className="card">
             <div className="card-header">List of Files</div>
             <ul className="list-group list-group-flush">
-              {fileInfos &&
-                fileInfos.map((file, index) => (
-                  <li className="list-group-item" key={index}>
-                    <a href={file.url}>{file.name}</a>
-                  </li>
-                ))}
+              {fileInfos.map((file, index) => (
+                <li className="list-group-item" key={index}>
+                  <a href={file.url}>{file.name}</a>
+                </li>
+              ))}
             </ul>
           </div>
         )}

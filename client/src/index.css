@@ -28,6 +28,7 @@
     width: 30%;
     background-color: var(--primary-color);
     color: white;
+    border-radius: 15px;
   }
   .my-3{
     width: 90%;
