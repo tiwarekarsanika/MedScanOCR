@@ -13,6 +13,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import styles from './ProfileCreate.module.css';
+import { Link } from 'react-router-dom';
 
 
 const ProfileCreate = () => {
@@ -193,6 +194,7 @@ const ProfileCreate = () => {
                                 />
                             </Box>
                         </Box>
+                        <Link to="/">
                         <Button onClick={handleFormSubmit} className={styles.butt2}
                             sx={{
                                 "background-color": "var(--secondary-color)",
@@ -214,7 +216,7 @@ const ProfileCreate = () => {
                                     color: 'black',
                                     boxShadow: '0 1rem 2rem rgba(0, 0, 0, 0.5)',
                                 },
-                            }}>Submit</Button>
+                            }}>Submit</Button></Link>
                     </div>
                 </Modal>
             </div>

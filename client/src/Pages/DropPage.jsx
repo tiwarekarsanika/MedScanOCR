@@ -17,7 +17,6 @@ padding:5%;
 `
 const DropPage = () => {
   return (
-  
     <Wrapper>
     <div className='title'>Document Upload</div>
       <UploadFiles/>

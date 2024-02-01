@@ -154,6 +154,20 @@ const ChatApp = () => {
     gender: ''
   })
 
+  const handleClick = async() => {
+    setPatient({ name: p.name, age: p.age, gender: p.gender })
+    const firstResponse = await fetch('http://localhost:8000/user', {
+      method: 'POST',
+      body: JSON.stringify({ "name": p.name }),
+    })
+
+    const user_id = firstResponse
+    
+    const secondResponse = await fetch('http://localhost:8000/download/${user_id}').then((secondResponse) => secondResponse.json())
+    .then((data) => console.log(data))
+    .catch((error) => console.error(error));
+  }
+
   const handleChange = e => {
     setQuery(e.target.value)
   }
@@ -189,13 +203,7 @@ const ChatApp = () => {
               name={p.name}
               age={p.age}
               gender={p.gender}
-              onClick={() => {
-                setPatient({
-                  name: p.name,
-                  age: p.age,
-                  gender: p.gender
-                })
-              }}
+              onClick={handleClick}
             ></PatientCard>
           ))}
         </PatientListwrapper>

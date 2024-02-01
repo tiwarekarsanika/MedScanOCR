@@ -9,10 +9,10 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<ChatApp />} />
-        <Route path="/profile" element={<ProfileCreate />} />
+        <Route path="/start" element={<ProfileCreate />} />
+        <Route path="/" element={<DropPage />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/dropyourfileshere" element={<DropPage />} />
+        <Route path="/chat" element={<ChatApp />} />
       </Routes>
     </BrowserRouter>
   )
