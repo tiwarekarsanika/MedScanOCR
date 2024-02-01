@@ -10,6 +10,45 @@
     --background-color:#f6f8fa;
     /* Add more color variables as needed */
   }
+  
+
+  .dropzone {
+    text-align: center;
+    padding: 30px;
+    border: 3px dashed #eeeeee;
+    background-color: #fafafa;
+    color: #bdbdbd;
+    cursor: pointer;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  
+  .btn{
+    height: 50px;
+    width: 30%;
+    background-color: var(--primary-color);
+    color: white;
+  }
+  .my-3{
+    width: 90%;
+    height: auto;
+  }
+  .wrap{
+    width: 60%;
+    display: flex;
+    flex-direction: column  ;
+    align-items: center;
+    
+    margin-top: 2%;
+  }
+  .selected-file-wrapper {
+    text-align: center;
+  }
+  
+  .selected-file {
+    color: #000; 
+    font-weight: bold;
+  }
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
